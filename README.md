@@ -27,3 +27,7 @@ npm start
 | `npm build` | Build the project |
 | `npm test` | Run test cases  |
 | `npm test --coverage` | Run test cases with coverage |
+
+### Note
+
+Enter `done` to exit the command line
