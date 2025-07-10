@@ -18,18 +18,39 @@ export const parseField = (field: string, type: FieldType): number[] => {
   } else if (field.includes("/")) {
     const [range, step] = field.split("/");
     const stepNum = Number(step);
-    const rangeObj = getRange(range, { max, min });
 
-    if (rangeObj instanceof Error) {
-      rangeObj.cause = {
-        name: type,
-        values: step,
-      };
-      throw rangeObj;
-    }
+    if (range.includes("-")) {
+      const rangeObj = getRange(range, { max, min });
 
-    for (let i = rangeObj.min; i <= rangeObj.max; i += stepNum) {
-      values.push(i);
+      if (rangeObj instanceof Error) {
+        rangeObj.cause = {
+          name: type,
+          values: step,
+        };
+        throw rangeObj;
+      }
+
+      for (let i = rangeObj.min; i <= rangeObj.max; i += stepNum) {
+        values.push(i);
+      }
+    } else if (range.includes(",")) {
+      const list = getList(range, { max, min });
+      if (list instanceof Error) {
+        list.cause = {
+          name: type,
+          values: field,
+        };
+        throw list;
+      }
+
+      const lastElement = list[list.length - 1];
+      list.forEach((l, index) =>
+        index !== list.length - 1 ? values.push(l) : null
+      );
+
+      for (let i = lastElement; i <= max; i += stepNum) {
+        values.push(i);
+      }
     }
   } else if (field.includes("-")) {
     const rangeObj = getRange(field, { max, min });

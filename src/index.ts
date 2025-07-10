@@ -20,6 +20,7 @@ function parseCronString() {
       try {
         if (cron_str && cron_str != "done") {
           const result = Parser(cron_str);
+          const nextInstance = nextOccurence(result);
           const table = PrintTable([
             { Minute: JSON.stringify(result.minute) },
             { Hour: JSON.stringify(result.hour) },
@@ -27,6 +28,7 @@ function parseCronString() {
             { Month: JSON.stringify(result.month) },
             { "Day of week": JSON.stringify(result.week) },
             { Command: result.command },
+            { "Next Occurrence": JSON.stringify(nextInstance) },
           ]);
 
           console.log(table.toString());
@@ -56,5 +58,5 @@ function justParsing(cronStr: string) {
     console.log("Next Instance:", new Date().toString(), nextRun[0].toString());
 }
 
-//parseCronString();
-justParsing("5 * * * * SOME_COMMAND");
+parseCronString();
+//justParsing("5,10,11/10 * * * * SOME_COMMAND");
