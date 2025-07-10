@@ -25,6 +25,11 @@ export const Ranges: Record<FieldType, Range> = {
   command: { min: 1, max: MAX_LIMIT },
 };
 
-export interface TableHead {
-  
+export interface ParsedCron {
+  minute: number[];
+  hour: number[];
+  day: number[];
+  month: number[];
+  week: number[];
+  command: string;
 }

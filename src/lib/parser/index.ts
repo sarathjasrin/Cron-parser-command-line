@@ -1,8 +1,9 @@
+import { ParsedCron } from "@root/model/common";
 import { ErrorMessages } from "../constants";
 import { ParserError } from "../utils";
 import { parseField } from "./parser";
 
-export const Parser = (cronStr: string) => {
+export const Parser = (cronStr: string): ParsedCron => {
   const cronFields = cronStr.trim().split(/\s+/);
   if (cronFields.length < 6) {
     throw ParserError(ErrorMessages.INVALID_CRON_STRING, {

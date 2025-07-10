@@ -4,6 +4,7 @@ export const ErrorMessages = {
   INVALID_LIST: "Invalid List",
   INVALID_NUMBER: "Invalid Number",
   INVALID_CRON_STRING: "Invalid Cron String",
+  INVALID_START_DATE: "Invalid Start Date",
 };
 
 export const ColorCode = {
@@ -11,3 +12,5 @@ export const ColorCode = {
   fgRed: "\x1b[31m",
   fgGreen: "\x1b[32m",
 };
+
+export const MINS_PER_YEAR = 530000;

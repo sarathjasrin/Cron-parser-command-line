@@ -1,6 +1,6 @@
-import { FieldType, Range, Ranges } from "../../model/common";
-import { ParserError } from "../utils";
-import { ErrorMessages } from "../constants";
+import { FieldType, ParsedCron, Range, Ranges } from "../../model/common";
+import { ParserError, validateDate } from "../utils";
+import { ErrorMessages, MINS_PER_YEAR } from "../constants";
 import { Months, WeekDay } from "../../enums";
 
 export const parseField = (field: string, type: FieldType): number[] => {
@@ -67,6 +67,31 @@ export const parseField = (field: string, type: FieldType): number[] => {
   return values;
 };
 
+export const nextOccurence = (
+  parsedCron: ParsedCron,
+  n = 1,
+  startDate = new Date()
+): Date[] | null => {
+  const occurrences: Date[] = [];
+
+  if (!validateDate(startDate)) {
+    throw ParserError(ErrorMessages.INVALID_START_DATE);
+  }
+
+  let current = new Date(startDate.getTime());
+
+  current.setSeconds(0, 0);
+
+  while (occurrences.length < n) {
+    const next = findNextValidDate(current, parsedCron);
+    if (!next) return null;
+    occurrences.push(next);
+    current.setMinutes(current.getMinutes() + 1);
+  }
+
+  return occurrences;
+};
+
 const getRange = (range: string, limit: Range): Range | Error => {
   if (range === "*") {
     return limit;
@@ -124,4 +149,28 @@ const getMonthWeekMapping = (name: string, type = "month"): string | null => {
     }
   }
   return mapping.length > 0 ? mapping.join(",") : null;
+};
+
+const findNextValidDate = (
+  currentDate: Date,
+  parsedCron: ParsedCron
+): Date | null => {
+  let attempts = 0;
+
+  while (attempts < MINS_PER_YEAR) {
+    const matches =
+      parsedCron.minute.includes(currentDate.getMinutes()) &&
+      parsedCron.hour.includes(currentDate.getHours()) &&
+      parsedCron.day.includes(currentDate.getDate()) &&
+      parsedCron.month.includes(currentDate.getMonth() + 1) &&
+      parsedCron.week.includes(currentDate.getDay());
+
+    if (matches) {
+      return new Date(currentDate);
+    }
+
+    attempts++;
+  }
+
+  return null;
 };

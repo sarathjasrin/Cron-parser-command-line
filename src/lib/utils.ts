@@ -14,3 +14,11 @@ export const PrintTable = (
   table.push(...rows);
   return table.toString();
 };
+
+export const validateDate = (date: string | Date): boolean => {
+  if (typeof date === "string") {
+    date = new Date(date);
+  }
+
+  return date && !isNaN(date.getTime());
+};

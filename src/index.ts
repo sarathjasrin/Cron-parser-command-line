@@ -2,6 +2,7 @@ import inquirer from "inquirer";
 import { Parser } from "./lib/parser";
 import { PrintTable } from "./lib/utils";
 import { ColorCode } from "./lib/constants";
+import { nextOccurence } from "./lib/parser/parser";
 
 function parseCronString() {
   inquirer
@@ -48,4 +49,12 @@ function parseCronString() {
     });
 }
 
-parseCronString();
+function justParsing(cronStr: string) {
+  const result = Parser(cronStr);
+  const nextRun = nextOccurence(result);
+  if (nextRun)
+    console.log("Next Instance:", new Date().toString(), nextRun[0].toString());
+}
+
+//parseCronString();
+justParsing("5 * * * * SOME_COMMAND");
